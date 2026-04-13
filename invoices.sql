@@ -25,3 +25,14 @@ select invoices.vendor_name,vendors.country,amount,status,vendors.vendor_type fr
 inner join vendors on invoices.vendor_name=vendors.vendor_name
 where country ="Kenya" and status in ("Pending","Overdue")
 order by amount DESC
+
+with dept_avg as (
+    select department,avg(amount) as avg_amount
+    from invoices
+    group by department
+)
+select i.vendor_name,i.department,i.amount,d.avg_amount
+from invoices i 
+join dept_avg d on i.department=d.department
+where i.amount > d.avg_amount
+order by i.department
